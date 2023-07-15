@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import FormAddTodo from "./components/FormAddTodo";
+import Todos from "./components/Todos";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+export interface Todo {
+  text: string;
+  complete: boolean;
 }
 
-export default App
+const initialTodos = [
+  {
+    text: "Learn React",
+    complete: false,
+  },
+  {
+    text: "Lear TypeScript",
+    complete: true,
+  },
+];
+
+const App = () => {
+  const [todos, setTodos] = useState<Todo[]>(initialTodos);
+
+  const addTodo = (text: string) => {
+    const newTodo = { text, complete: false };
+    setTodos([...todos, newTodo]);
+  };
+
+  const toogleTodo = (selectedTodo: Todo) => {
+    const newTodos = todos.map((todo) => {
+      if (todo === selectedTodo) {
+        return {
+          ...todo,
+          complete: !todo.complete,
+        };
+      }
+      return todo;
+    });
+    setTodos(newTodos);
+  };
+
+  const removeTodo = (selectedTodo: Todo) => {
+    const newTodos = todos.filter((todo) => todo !== selectedTodo);
+    setTodos(newTodos);
+  };
+
+  return (
+    <div className="container mt-5">
+        <h1 className="text-center">
+          <mark>Todo List</mark>
+        </h1>
+      
+      <FormAddTodo addTodo={addTodo} />
+
+      <div>
+        <Todos todos={todos} toogleTodo={toogleTodo} removeTodo={removeTodo} />
+      </div>
+    </div>
+  );
+};
+
+export default App;
